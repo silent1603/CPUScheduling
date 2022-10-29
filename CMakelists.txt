@@ -1,0 +1,84 @@
+cmake_minimum_required(VERSION 3.13)
+
+include(FetchContent)
+Set(FETCHCONTENT_QUIET FALSE)
+FetchContent_Declare(vcpkg
+    GIT_REPOSITORY https://github.com/microsoft/vcpkg/
+    GIT_TAG 2022.09.27
+)
+FetchContent_MakeAvailable(vcpkg)
+
+# NOTE: This must be defined before the first project call
+set(CMAKE_TOOLCHAIN_FILE "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "")
+
+project(CPUScheduling)
+
+
+set(RELEASE_PATH "${PROJECT_SOURCE_DIR}/release")
+set(DEBUG_PATH "${PROJECT_SOURCE_DIR}/debug")
+
+find_package(SDL2 CONFIG REQUIRED)
+find_package(Catch2 CONFIG REQUIRED)
+find_package(EnTT CONFIG REQUIRED)
+find_package(glad CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
+find_package(imguizmo CONFIG REQUIRED)
+find_package(implot CONFIG REQUIRED)
+set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(sdl2-image CONFIG REQUIRED)
+find_package(SDL2_ttf CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(implot CONFIG REQUIRED)
+find_package(asio CONFIG REQUIRED)
+find_package(OpenAL CONFIG REQUIRED)
+
+set(PROJECT_PATH ${CMAKE_SOURCE_DIR}/CPUScheduling)
+set(SRC_PATH ${PROJECT_PATH}/src)
+set(RESOURCE_PATH ${PROJECT_PATH}/resources)
+
+file(GLOB_RECURSE PROJECT_SOURCES ${SRC_PATH}/*.cpp)
+file(GLOB_RECURSE PROJECT_HEADERS ${SRC_PATH}/*.h)
+file(GLOB_RECURSE PROJECT_RESOURCES ${RESOURCE_PATH}/*.*)
+
+source_group(TREE ${PROJECT_PATH} FILES ${PROJECT_SOURCES})
+source_group(TREE ${PROJECT_PATH} FILES ${PROJECT_HEADERS})
+source_group(TREE ${PROJECT_PATH} FILES ${PROJECT_RESOURCES})
+
+add_executable(CPUScheduling ${PROJECT_HEADERS} ${PROJECT_SOURCES})
+
+set_property(TARGET CPUScheduling PROPERTY CXX_STANDARD 11)
+
+target_link_libraries(CPUScheduling PRIVATE SDL2::SDL2 SDL2::SDL2main 
+                                        PRIVATE Catch2::Catch2 Catch2::Catch2WithMain  
+                                        PRIVATE EnTT::EnTT 
+                                        PRIVATE glad::glad
+                                        PRIVATE imgui::imgui 
+                                        PRIVATE imguizmo::imguizmo 
+                                        PRIVATE nlohmann_json nlohmann_json::nlohmann_json
+                                        PRIVATE SDL2::SDL2_image 
+                                        PRIVATE $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static> 
+                                        PRIVATE spdlog::spdlog spdlog::spdlog_header_only 
+                                        PRIVATE asio asio::asio 
+                                        PRIVATE implot::implot 
+                                        PRIVATE OpenAL::OpenAL 
+)
+
+if (MSVC)
+  set_target_properties(CPUScheduling PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${DEBUG_PATH})
+endif()
+
+add_custom_command(TARGET CPUScheduling POST_BUILD 
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory 
+                      ${CMAKE_SOURCE_DIR}/CPUScheduling/resources ${RELEASE_PATH}/resources  
+                      COMMAND ${CMAKE_COMMAND} -E copy_directory 
+                      ${CMAKE_SOURCE_DIR}/CPUScheduling/resources ${DEBUG_PATH}/resources 
+)
+
+set_target_properties(CPUScheduling PROPERTIES 
+           ARCHIVE_OUTPUT_DIRECTORY "${RELEASE_PATH}/lib" 
+           LIBRARY_OUTPUT_DIRECTORY "${RELEASE_PATH}/lib" 
+           RUNTIME_OUTPUT_DIRECTORY "${RELEASE_PATH}" 
+           RUNTIME_OUTPUT_DIRECTORY_DEBUG "${RELEASE_PATH}" 
+           RUNTIME_OUTPUT_DIRECTORY_RELEASE "${RELEASE_PATH}"
+)
