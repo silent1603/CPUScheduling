@@ -66,6 +66,7 @@ target_link_libraries(CPUScheduling PRIVATE SDL2::SDL2 SDL2::SDL2main
 
 if (MSVC)
   set_target_properties(CPUScheduling PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${DEBUG_PATH})
+  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CPUScheduling)
 endif()
 
 add_custom_command(TARGET CPUScheduling POST_BUILD 
@@ -75,10 +76,15 @@ add_custom_command(TARGET CPUScheduling POST_BUILD
                       ${CMAKE_SOURCE_DIR}/CPUScheduling/resources ${DEBUG_PATH}/resources 
 )
 
-set_target_properties(CPUScheduling PROPERTIES 
+set_target_properties(CPUScheduling S 
+  PROPERTIES 
            ARCHIVE_OUTPUT_DIRECTORY "${RELEASE_PATH}/lib" 
+           ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${DEBUG_PATH}/lib" 
+          ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${RELEASE_PATH}/lib" 
            LIBRARY_OUTPUT_DIRECTORY "${RELEASE_PATH}/lib" 
+           LIBRARY_OUTPUT_DIRECTORY_DEBUG "${DEBUG_PATH}/lib" 
+           LIBRARY_OUTPUT_DIRECTORY_RELEASE "${RELEASE_PATH}/lib" 
            RUNTIME_OUTPUT_DIRECTORY "${RELEASE_PATH}" 
-           RUNTIME_OUTPUT_DIRECTORY_DEBUG "${RELEASE_PATH}" 
+           RUNTIME_OUTPUT_DIRECTORY_DEBUG "${DEBUG_PATH}" 
            RUNTIME_OUTPUT_DIRECTORY_RELEASE "${RELEASE_PATH}"
 )
