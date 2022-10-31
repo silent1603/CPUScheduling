@@ -32,6 +32,8 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
 find_package(asio CONFIG REQUIRED)
 find_package(OpenAL CONFIG REQUIRED)
+find_package(EASTL CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
 
 set(PROJECT_PATH ${CMAKE_SOURCE_DIR}/CPUScheduling)
 set(SRC_PATH ${PROJECT_PATH}/src)
@@ -49,6 +51,8 @@ add_executable(CPUScheduling ${PROJECT_HEADERS} ${PROJECT_SOURCES})
 
 set_property(TARGET CPUScheduling PROPERTY CXX_STANDARD 11)
 
+target_include_directories(CPUScheduling PRIVATE ${SRC_PATH})
+target_precompile_headers(CPUScheduling PRIVATE   ${SRC_PATH}/AppPch.h)
 target_link_libraries(CPUScheduling PRIVATE SDL2::SDL2 SDL2::SDL2main 
                                         PRIVATE Catch2::Catch2 Catch2::Catch2WithMain  
                                         PRIVATE EnTT::EnTT 
@@ -62,11 +66,19 @@ target_link_libraries(CPUScheduling PRIVATE SDL2::SDL2 SDL2::SDL2main
                                         PRIVATE asio asio::asio 
                                         PRIVATE implot::implot 
                                         PRIVATE OpenAL::OpenAL 
+                                        PRIVATE EASTL 
+                                        PRIVATE glm::glm
 )
 
+set_target_properties(CPUScheduling PROPERTIES
+                      UNITY_BUILD_MODE BATCH 
+                      UNITY_BUILD_BATCH_SIZE 2
+                      )
 if (MSVC)
   set_target_properties(CPUScheduling PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${DEBUG_PATH})
   set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CPUScheduling)
+  target_compile_options(CPUScheduling PUBLIC "/ZI")
+  target_link_options(CPUScheduling PUBLIC "/INCREMENTAL")
 endif()
 
 add_custom_command(TARGET CPUScheduling POST_BUILD 
@@ -76,7 +88,7 @@ add_custom_command(TARGET CPUScheduling POST_BUILD
                       ${CMAKE_SOURCE_DIR}/CPUScheduling/resources ${DEBUG_PATH}/resources 
 )
 
-set_target_properties(CPUScheduling S 
+set_target_properties(CPUScheduling
   PROPERTIES 
            ARCHIVE_OUTPUT_DIRECTORY "${RELEASE_PATH}/lib" 
            ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${DEBUG_PATH}/lib" 
