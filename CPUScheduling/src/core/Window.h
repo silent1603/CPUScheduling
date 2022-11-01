@@ -1,7 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 #include "glm/glm.hpp"
-#include "ImguiWindow.h"
+#include "imguiwindow.h"
 struct SDL_Window;
 using SDL_GLContext = void*;
 namespace CPUScheduling{
@@ -27,14 +27,12 @@ namespace CPUScheduling{
                 void PumpEvent();
                 void BeginRender();
                 void EndRender();
+                inline SDL_Window* GetSDLWindow() { return mWindow; }
+                inline SDL_GLContext GetGLContext() { return mGLContext; }
+                inline eastl::string GetGLSLString() { return glsl_version; }
                 glm::ivec2 GetSize();
-                SDL_Window* GetSDL2Window() { return mWindow; }
-                SDL_GLContext GetGLContext() { return mGLContext; }
-                eastl::string GetGLSLVersion() { return glsl_version; }
-                glm::ivec2 GetSizeInAspectRatio(int width, int height);
-        private:
-            WindowProperties mWindowProperties;
                 eastl::string glsl_version;
+            private:
                 SDL_Window* mWindow;
                 SDL_GLContext mGLContext;
                 ImguiWindow mImguiWindow;
