@@ -30,7 +30,15 @@ namespace CPUScheduling {
 				SDL_VERSION(&version);
 				APP_CORE_TRACE ("SDL {}.{}.{} " , (int32_t)version.major , 
 					(int32_t)version.minor , (int32_t)version.patch );
-				if (mWindow.Create())
+				WindowProperties props;
+
+				props.title = "HippoEditor",
+				props.w = 1280;
+				props.h = 720;
+				props.imguiProps.IsDockingEnabled = true;
+
+			
+				if (mWindow.Create(props))
 				{
 					ret = true;
 					mIsRunning = true;
