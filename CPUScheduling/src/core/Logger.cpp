@@ -3,10 +3,10 @@
 #include "spdlog/sinks/basic_file_sink.h"
 
 
- std::shared_ptr<spdlog::logger> CPUScheduling::Core::Log::s_AppLogger;
+ std::shared_ptr<spdlog::logger> Core::Log::s_AppLogger;
 
- void CPUScheduling::Core::Log::Init()
-  {
+ void Core::Log::Init()
+{
             std::vector<spdlog::sink_ptr> logSinks;
             logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
             logSinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("App.log", true));
@@ -19,4 +19,4 @@
             s_AppLogger->set_level(spdlog::level::trace);
             s_AppLogger->flush_on(spdlog::level::trace);
 
-  }
+}

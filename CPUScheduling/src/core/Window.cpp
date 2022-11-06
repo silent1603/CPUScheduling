@@ -1,4 +1,4 @@
-#include "Application.h"
+#include "Engine.h"
 #include "glad/glad.h"
 #include "SDL2/SDL.h"
 #include "imgui.h"
@@ -7,8 +7,8 @@
 #include "Window.h"
 #include "input/mouse.h"
 #include "input/keyboard.h"
-namespace CPUScheduling {
-	namespace Core {
+
+namespace Core {
 
 		WindowProperties::WindowProperties()
 		{
@@ -85,7 +85,7 @@ namespace CPUScheduling {
         }
 
 
-        void Window::PumpEvent()
+        void Window::PumpEvents()
         {
             SDL_Event e;
             while (SDL_PollEvent(&e))
@@ -93,34 +93,10 @@ namespace CPUScheduling {
                 switch (e.type)
                 {
                 case SDL_QUIT:
-                    Application::Instance().Quit();
+                    Engine::Instance().Quit();
                 default:
                     break;
                 }
-                mImguiWindow.HandleSDLEvent(e);
-            }
-            Input::Mouse::Update();
-            Input::Keyboard::Update();
-        }
-
-		void Window::Shutdown()
-		{
-			SDL_DestroyWindow(mWindow);
-			mWindow = nullptr;
-		}
-
-		void Window::PumpEvent()
-		{
-			SDL_Event e;
-			while (SDL_PollEvent(&e))
-			{
-				switch (e.type)
-				{
-				case SDL_QUIT:
-					Application::Instance().Quit();
-				default:
-					break;
-				}
 				mImguiWindow.HandleSDLEvent(e);
 			}
 			if (!mImguiWindow.WantCaptureMouse())
@@ -131,6 +107,12 @@ namespace CPUScheduling {
 			{
 				Input::Keyboard::Update();
 			}
+        }
+
+		void Window::Shutdown()
+		{
+			SDL_DestroyWindow(mWindow);
+			mWindow = nullptr;
 		}
 
 		glm::ivec2 Window::GetSize()
@@ -140,31 +122,49 @@ namespace CPUScheduling {
 			return glm::ivec2(w, h);
 		}
 
-		glm::ivec2 Window::GetSizeInAspectRatio(int width, int height)
+		void Window::HandleResize(int width, int height)
 		{
-			return glm::ivec2();
+			mFramebufferSize = GetSizeInAspectRatio(width, height);
 		}
 
+		glm::ivec2 Window::GetSizeInAspectRatio(int width, int height)
+		{
+			int framebufferWidth = (int)(height * mWindowProperties.aspectRatio);
+			int framebufferHeight = (int)(width * (1.f / mWindowProperties.aspectRatio));
+
+			if (height >= framebufferHeight)
+			{
+				framebufferWidth = width;
+			}
+			else
+			{
+				framebufferHeight = height;
+			}
+
+			return { framebufferWidth, framebufferHeight };
+		}
 
 
 		void Window::BeginRender()
 		{
+		}
 
         void Window::EndRender()
         {
+			if (mShouldRenderToScreen)
+			{
+				RenderToScreen();
+			}
             mImguiWindow.BeginRender();
-            ImGui::ShowDemoWindow();
+			Engine::Instance().GetApp().ImguiRender();
             mImguiWindow.EndRender();
             SDL_GL_SwapWindow(mWindow);
         }
 
-		void Window::EndRender()
+		void Window::RenderToScreen()
 		{
-			mImguiWindow.BeginRender();
-			mImguiWindow.Render();
-			mImguiWindow.EndRender();
-			SDL_GL_SwapWindow(mWindow);
+
 		}
 
-	}
 }
+

@@ -1,12 +1,11 @@
 #include "ImguiWindow.h"
-#include "Application.h"
+#include "Engine.h"
 #include "SDL2/SDL.h"
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
-namespace CPUScheduling
-{
-	namespace Core {
+
+namespace Core {
 		void ImguiWindow::Create()
 		{
 			IMGUI_CHECKVERSION();
@@ -24,7 +23,7 @@ namespace CPUScheduling
 				io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 			}
 
-			auto& window = Application::Instance().GetWindow();
+			auto& window = Engine::Instance().GetWindow();
 			ImGui_ImplSDL2_InitForOpenGL(window.GetSDLWindow(), window.GetGLContext());
 			ImGui_ImplOpenGL3_Init(window.GetGLSLString().c_str());
 		}
@@ -44,7 +43,7 @@ namespace CPUScheduling
 		void ImguiWindow::BeginRender()
 		{
 			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplSDL2_NewFrame(Application::Instance().GetWindow().GetSDLWindow());
+			ImGui_ImplSDL2_NewFrame(Engine::Instance().GetWindow().GetSDLWindow());
 			ImGui::NewFrame();
 		}
 
@@ -56,7 +55,7 @@ namespace CPUScheduling
 			ImGuiIO& io = ImGui::GetIO();
 			if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 			{
-				auto& window = Application::Instance().GetWindow();
+				auto& window = Engine::Instance().GetWindow();
 				ImGui::UpdatePlatformWindows();
 				ImGui::RenderPlatformWindowsDefault();
 				SDL_GL_MakeCurrent(window.GetSDLWindow(), window.GetGLContext());
@@ -72,5 +71,4 @@ namespace CPUScheduling
 		{
 			return ImGui::GetIO().WantCaptureKeyboard;
 		}
-	}
 }

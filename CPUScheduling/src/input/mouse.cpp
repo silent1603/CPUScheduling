@@ -1,8 +1,7 @@
 #include "mouse.h"
 #include "SDL2/SDL_mouse.h"
-namespace CPUScheduling
-{
-	namespace Input {
+
+namespace Input {
 		int Mouse::x = 0;
 		int Mouse::xLast = 0;
 		int Mouse::y = 0;
@@ -55,5 +54,4 @@ namespace CPUScheduling
 			}
 			return false;
 		}
-	}
 }

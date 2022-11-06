@@ -1,8 +1,8 @@
 #ifndef IMGUIWINDOW_H
 #define IMGUIWINDOW_H
 typedef union SDL_Event SDL_Event;
-namespace CPUScheduling {
-	namespace Core {
+
+namespace Core {
 	struct ImguiWindowProperties
 	{
 		bool MoveFromTitleBarOnly = true;
@@ -27,6 +27,6 @@ namespace CPUScheduling {
 		void BeginRender();
 		void EndRender();
 	};
-	}
 }
+
 #endif // !IMGUIWINDOW_H

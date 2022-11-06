@@ -2,10 +2,8 @@
 #define LOGGER_H
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
-namespace CPUScheduling
-{
-    namespace Core
-    {
+
+namespace Core {
         class Log
         {
         public:
@@ -14,14 +12,14 @@ namespace CPUScheduling
         private:
             static std::shared_ptr<spdlog::logger> s_AppLogger;
         };
-    }
 }
 
-#define APP_CORE_TRACE(...) ::CPUScheduling::Core::Log::GetAppLogger()->trace(__VA_ARGS__)
-#define APP_CORE_INFO(...) ::CPUScheduling::Core::Log::GetAppLogger()->info(__VA_ARGS__)
-#define APP_CORE_WARN(...) ::CPUScheduling::Core::Log::GetAppLogger()->warn(__VA_ARGS__)
-#define APP_CORE_ERROR(...) ::CPUScheduling::Core::Log::GetAppLogger()->error(__VA_ARGS__)
-#define APP_CORE_CRITICAL(...) ::CPUScheduling::Core::Log::GetAppLogger()->critical(__VA_ARGS__)
+
+#define APP_CORE_TRACE(...) ::Core::Log::GetAppLogger()->trace(__VA_ARGS__)
+#define APP_CORE_INFO(...) ::Core::Log::GetAppLogger()->info(__VA_ARGS__)
+#define APP_CORE_WARN(...) ::Core::Log::GetAppLogger()->warn(__VA_ARGS__)
+#define APP_CORE_ERROR(...) ::Core::Log::GetAppLogger()->error(__VA_ARGS__)
+#define APP_CORE_CRITICAL(...) ::Core::Log::GetAppLogger()->critical(__VA_ARGS__)
 
 
 #endif

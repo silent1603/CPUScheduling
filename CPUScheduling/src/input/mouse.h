@@ -1,9 +1,8 @@
 #ifndef MOUSE_H
 #define MOUSE_H
 #include <EASTL/array.h>
-namespace CPUScheduling
-{
-	namespace Input {
+
+namespace Input {
 		class Mouse
 		{
 		public:
@@ -30,7 +29,7 @@ namespace CPUScheduling
 			static std::array<bool, ButtonCount> buttonsLast;
 		};
 	}
-}
+
 enum {
 	INPUT_MOUSE_FIRST = 1,
 	INPUT_MOUSE_LEFT = INPUT_MOUSE_FIRST,
